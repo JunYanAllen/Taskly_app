@@ -10,59 +10,60 @@ import UIKit
 
 class ViewController: UITableViewController {
 
-    var taskStore = TaskStore()
-    
+    var taskStore: TaskStore!{
+        didSet{
+            //取得資料
+            taskStore.tasks = TasksUtility.fetch() ?? [[Task](), [Task]()]
+            
+            tableView.reloadData()
+        }
+    }
+    var newTask : String = "",newDate :String = ""
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        tableView.tableFooterView = UIView()
         
+//        let indexPath = IndexPath(row: 0,section: 0)
+//        self.tableView.insertRows(at: [indexPath], with: .automatic)
     }
     
-    //新增任務功能
-    @IBAction func addTask(_ sender: UIBarButtonItem) {
-        //任務視窗設定
-        let alertController = UIAlertController(title: "Add Task", message: nil, preferredStyle: .alert)
+    @IBAction func cancelButton(segue:UIStoryboardSegue) {}
+    @IBAction func saveButton(segue:UIStoryboardSegue) {
+        let DetailVC = segue.source as! CreateTaskController
+        newTask = DetailVC.task
+        newDate = DetailVC.date_text
         
-        //任務視窗-新增功能
-        let addAction = UIAlertAction(title: "Add", style: .default){ _ in
+        if newTask == "",newDate == ""{
             
-            //取得文字內容
-            guard let name = alertController.textFields?.first?.text else { return }
-            
-            //建立任務
-            let newTask = Task(name: name)
-            
-            //增加任務
-            self.taskStore.add(newTask,at: 0)
-            
+        }else{
+            let new = Task(task: newTask, date: newDate)
+            self.taskStore.add(new, at: 0)
             //重新整理頁面
             let indexPath = IndexPath(row: 0,section: 0)
             self.tableView.insertRows(at: [indexPath], with: .automatic)
         }
-        
-        //任務視窗-新增功能-預設關閉
-        addAction.isEnabled = false
-        //任務視窗-取消
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        
-        //任務視窗-
-        alertController.addTextField{ textField in
-            textField.placeholder = "Enter task name..."
-            textField.addTarget(self, action: #selector(self.handleTextChanged), for: .editingChanged)
-        }
-        
-        alertController.addAction(addAction)
-        alertController.addAction(cancelAction)
-        
-        present(alertController,animated: true)
     }
-
+    @IBAction func backButton(segue: UIStoryboardSegue) {}
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toDetailSegue"{
+            if let indexPath = tableView.indexPathForSelectedRow{
+                let Dvc:DetailViewController = segue.destination as! DetailViewController
+                
+                Dvc.getTask = taskStore.tasks[indexPath.section][indexPath.row].task
+                Dvc.getDate = taskStore.tasks[indexPath.section][indexPath.row].date
+                
+            }
+        }
+    }
 }
 
 // MARK: - DataSource
 extension ViewController{
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return section == 0 ? "To-do" : "Done"
+        return section == 0 ? "代辦工作" : "完成"
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -75,7 +76,7 @@ extension ViewController{
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = taskStore.tasks[indexPath.section][indexPath.row].name
+        cell.textLabel?.text = taskStore.tasks[indexPath.section][indexPath.row].task
         return cell
     }
     
@@ -100,7 +101,7 @@ extension ViewController{
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil){ (action,sourceView,completionHandler) in
             
-            let isDone = self.taskStore.tasks[indexPath.section][indexPath.row].isDone
+            guard let isDone = self.taskStore.tasks[indexPath.section][indexPath.row].isDone else { return }
             
             self.taskStore.removeTask(at: indexPath.row, isDone: isDone)
             

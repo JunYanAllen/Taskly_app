@@ -8,12 +8,36 @@
 
 import Foundation
 
-class Task{
-    var name: String
-    var isDone: Bool
+class Task: NSObject,NSCoding {
     
-    init(name: String, isDone: Bool = false){
-        self.name = name
+    var task: String?
+    var date: String?
+    var isDone: Bool?
+    
+    private let taskKey = "task"
+    private let dateKey = "date"
+    private let isDoneKey = "isDone"
+    
+    init(task: String,date: String, isDone: Bool = false){
+        self.task = task
+        self.date = date
+        self.isDone = isDone
+    }
+    
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(task, forKey: taskKey)
+        aCoder.encode(date, forKey: dateKey)
+        aCoder.encode(isDone, forKey: isDoneKey)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        guard let task = aDecoder.decodeObject(forKey: taskKey) as? String,
+            let date = aDecoder.decodeObject(forKey: dateKey) as? String,
+            let isDone = aDecoder.decodeObject(forKey: isDoneKey) as? Bool
+            else { return }
+        
+        self.task = task
+        self.date = date
         self.isDone = isDone
     }
 }

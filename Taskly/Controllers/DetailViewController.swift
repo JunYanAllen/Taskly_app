@@ -10,12 +10,26 @@ import UIKit
 
 class DetailViewController: UIViewController {
 
+    @IBOutlet weak var TaskLabel: UILabel!
+    @IBOutlet weak var DateLabel: UILabel!
+    
+    var getTask:String?
+    var getDate:String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let getTask = getTask,let getDate = getDate{
+            TaskLabel.text = getTask
+            DateLabel.text = getDate
+        }
+    }
 
     /*
     // MARK: - Navigation
