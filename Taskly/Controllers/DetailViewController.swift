@@ -30,6 +30,14 @@ class DetailViewController: UIViewController {
             DateLabel.text = getDate
         }
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toModifySegue"{
+            let Dvc:CreateTaskController = segue.destination as! CreateTaskController
+            Dvc.getTask = TaskLabel.text!
+            Dvc.getDate = DateLabel.text!
+        }
+    }
 
     /*
     // MARK: - Navigation

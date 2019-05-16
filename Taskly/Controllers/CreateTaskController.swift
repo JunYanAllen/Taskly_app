@@ -13,6 +13,9 @@ class CreateTaskController: UIViewController,UIPickerViewDataSource, UIPickerVie
     var task: String = ""
     var date_text: String = ""
     
+    var getTask:String?
+    var getDate:String?
+    
     var date = ["每天","每週","每月","每兩個月","每三個月","每四個月","每五個月","每半年","每年"]
     
     @IBOutlet weak var taskText: UITextField!
@@ -41,6 +44,13 @@ class CreateTaskController: UIViewController,UIPickerViewDataSource, UIPickerVie
         toolBar.setItems([cancelButton, spaceButton, doneButton], animated: false)
         toolBar.isUserInteractionEnabled = true
         dateText.inputAccessoryView = toolBar
+        
+        if getTask == "" && getDate == ""{
+            
+        }else{
+            taskText.text = getTask
+            dateText.text = getDate
+        }
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
