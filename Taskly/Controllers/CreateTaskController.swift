@@ -15,6 +15,10 @@ class CreateTaskController: UIViewController,UIPickerViewDataSource, UIPickerVie
     
     var getTask:String?
     var getDate:String?
+    var getSection:Int?
+    var getRow:Int?
+    var fSection:Int?
+    var fRow:Int?
     
     var date = ["每天","每週","每月","每兩個月","每三個月","每四個月","每五個月","每半年","每年"]
     
@@ -53,10 +57,23 @@ class CreateTaskController: UIViewController,UIPickerViewDataSource, UIPickerVie
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let findSection = getSection,let findRow = getRow{
+            getSection = findSection
+            getRow = findRow
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "saveSegue" {
             task = taskText.text!
             date_text = dateText.text!
+            if getSection != nil && getRow != nil{
+                fSection = getSection
+                fRow = getRow
+            }
         }
     }
     

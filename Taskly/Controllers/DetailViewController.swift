@@ -15,10 +15,11 @@ class DetailViewController: UIViewController {
     
     var getTask:String?
     var getDate:String?
+    var getSection:Int?
+    var getRow:Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Do any additional setup after loading the view.
     }
     
@@ -36,6 +37,8 @@ class DetailViewController: UIViewController {
             let Dvc:CreateTaskController = segue.destination as! CreateTaskController
             Dvc.getTask = TaskLabel.text!
             Dvc.getDate = DateLabel.text!
+            Dvc.getSection = getSection
+            Dvc.getRow = getRow
         }
     }
 

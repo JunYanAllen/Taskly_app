@@ -19,7 +19,8 @@ class ViewController: UITableViewController {
         }
     }
     var newTask : String = "",newDate :String = ""
-
+    var mSection:Int?,mRow:Int?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -34,16 +35,37 @@ class ViewController: UITableViewController {
         let DetailVC = segue.source as! CreateTaskController
         newTask = DetailVC.task
         newDate = DetailVC.date_text
-        
-        if newTask == "",newDate == ""{
-            
-        }else{
+        mSection = DetailVC.fSection
+        mRow = DetailVC.fRow
+        if newTask != "" && newDate != "" && mSection == nil && mRow == nil{
             let new = Task(task: newTask, date: newDate)
             self.taskStore.add(new, at: 0)
             //重新整理頁面
             let indexPath = IndexPath(row: 0,section: 0)
             self.tableView.insertRows(at: [indexPath], with: .automatic)
+        }else if mSection != nil && mRow != nil{
+            let modify = Task(task: newTask, date: newDate)
+            taskStore.modify(modify, isDone: mSection!,row:mRow!)
+            tableView.reloadData()
         }
+        
+//        if mSection != nil && mRow != nil{
+//            let modify = Task(task: newTask, date: newDate)
+//            taskStore.modify(modify, isDone: mSection!,row:mRow!)
+//            tableView.reloadData()
+//        }
+       
+//        if mSection != nil && mRow != nil{
+//            let modify = Task(task: newTask, date: newDate)
+//            taskStore.modify(modify, isDone: mSection,row:mRow)
+//        }
+//        else{
+//            let new = Task(task: newTask, date: newDate)
+//            self.taskStore.add(new, at: 0)
+//            //重新整理頁面
+//            let indexPath = IndexPath(row: 0,section: 0)
+//            self.tableView.insertRows(at: [indexPath], with: .automatic)
+//        }
     }
     @IBAction func backButton(segue: UIStoryboardSegue) {}
     
@@ -54,6 +76,8 @@ class ViewController: UITableViewController {
                 
                 Dvc.getTask = taskStore.tasks[indexPath.section][indexPath.row].task
                 Dvc.getDate = taskStore.tasks[indexPath.section][indexPath.row].date
+                Dvc.getSection = indexPath.section
+                Dvc.getRow = indexPath.row
                 
             }
         }

@@ -17,6 +17,13 @@ class TaskStore{
         tasks[section].insert(task, at: index)
     }
     
+    //modify tasks
+    func modify(_ task: Task,isDone:Int,row:Int){
+        let section = isDone
+        tasks[section][row].task = task.task
+        tasks[section][row].date = task.date
+    }
+    
     //remove tasks
     @discardableResult func removeTask(at index: Int, isDone: Bool=false)->Task{
         let section = isDone ? 1:0
